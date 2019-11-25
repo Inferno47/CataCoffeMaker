@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using CoffeeMachineLibrary;
+using Moq;
 
 public class Tests
 {
@@ -8,7 +9,12 @@ public class Tests
     [SetUp]
     public void Setup()
     {
-        m_Coffeemaker = new CoffeeMaker();
+        var l_MockQuantity = new Mock<BeverageQuantityChecker>();
+        var l_MockEmail = new Mock<EmailNotifier>();
+
+        BeverageQuantityChecker l_Quantity = l_MockQuantity.Object;
+        EmailNotifier l_Email = l_MockEmail.Object;
+        m_Coffeemaker = new CoffeeMaker(l_Email, l_Quantity);
     }
 
     #region Iteration 1
@@ -174,6 +180,70 @@ public class Tests
         l_Order = new Order { Product = "orange juice", Money = 0.6 };
         m_Coffeemaker.Maker(l_Order);
         Assert.AreEqual("Sales:\ntea: 0\ncoffee: 1\norange juice: 1\nchocolate: 2\n\nProfit: 2,2", m_Coffeemaker.Report());
+    }
+
+    #endregion
+
+    #region Iteration 5
+
+    [Test]
+    public void TestSimpleShortagesOrange()
+    {
+        var l_MockQuantity = new Mock<BeverageQuantityChecker>();
+        var l_MockEmail = new Mock<EmailNotifier>();
+
+        l_MockQuantity.Setup(p => p.isEmpty("orange juice")).Returns(true);
+
+        BeverageQuantityChecker l_Quantity = l_MockQuantity.Object;
+        EmailNotifier l_Email = l_MockEmail.Object;
+        m_Coffeemaker = new CoffeeMaker(l_Email, l_Quantity);
+        Order l_Order = new Order { Product = "orange juice", Money = 0.6 };
+        Assert.AreEqual("M:shortages of water and/or milk", m_Coffeemaker.Maker(l_Order));
+    }
+
+    [Test]
+    public void TestSimpleShortagesCoffee()
+    {
+        var l_MockQuantity = new Mock<BeverageQuantityChecker>();
+        var l_MockEmail = new Mock<EmailNotifier>();
+
+        l_MockQuantity.Setup(p => p.isEmpty("coffee")).Returns(true);
+
+        BeverageQuantityChecker l_Quantity = l_MockQuantity.Object;
+        EmailNotifier l_Email = l_MockEmail.Object;
+        m_Coffeemaker = new CoffeeMaker(l_Email, l_Quantity);
+        Order l_Order = new Order { Product = "coffee", Money = 0.6 };
+        Assert.AreEqual("M:shortages of water and/or milk", m_Coffeemaker.Maker(l_Order));
+    }
+
+    [Test]
+    public void TestSimpleShortagesTea()
+    {
+        var l_MockQuantity = new Mock<BeverageQuantityChecker>();
+        var l_MockEmail = new Mock<EmailNotifier>();
+
+        l_MockQuantity.Setup(p => p.isEmpty("tea")).Returns(true);
+
+        BeverageQuantityChecker l_Quantity = l_MockQuantity.Object;
+        EmailNotifier l_Email = l_MockEmail.Object;
+        m_Coffeemaker = new CoffeeMaker(l_Email, l_Quantity);
+        Order l_Order = new Order { Product = "tea", Money = 0.6 };
+        Assert.AreEqual("M:shortages of water and/or milk", m_Coffeemaker.Maker(l_Order));
+    }
+
+    [Test]
+    public void TestSimpleShortagesChocolate()
+    {
+        var l_MockQuantity = new Mock<BeverageQuantityChecker>();
+        var l_MockEmail = new Mock<EmailNotifier>();
+
+        l_MockQuantity.Setup(p => p.isEmpty("chocolate")).Returns(true);
+
+        BeverageQuantityChecker l_Quantity = l_MockQuantity.Object;
+        EmailNotifier l_Email = l_MockEmail.Object;
+        m_Coffeemaker = new CoffeeMaker(l_Email, l_Quantity);
+        Order l_Order = new Order { Product = "chocolate", Money = 0.6 };
+        Assert.AreEqual("M:shortages of water and/or milk", m_Coffeemaker.Maker(l_Order));
     }
 
     #endregion

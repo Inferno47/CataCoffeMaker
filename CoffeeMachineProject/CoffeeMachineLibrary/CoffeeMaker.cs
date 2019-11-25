@@ -8,6 +8,9 @@ namespace CoffeeMachineLibrary
 {
     public class CoffeeMaker
     {
+        EmailNotifier m_Email;
+        BeverageQuantityChecker m_Quantity;
+
         private Dictionary<string, int> m_Sale = new Dictionary<string, int>() { { "tea", 0 }, { "coffee", 0 }, { "orange juice", 0 }, { "chocolate", 0 } };
         private double m_Profit = 0;
 
@@ -16,6 +19,12 @@ namespace CoffeeMachineLibrary
             { "coffee", new KeyValuePair<string, double>("C", 0.6) },
             { "orange juice", new KeyValuePair<string, double>("O", 0.6) },
             { "chocolate", new KeyValuePair<string, double>("H", 0.5) } };
+
+        public CoffeeMaker(EmailNotifier i_Email, BeverageQuantityChecker i_Quantity)
+        {
+            m_Email = i_Email;
+            m_Quantity = i_Quantity;
+        }
 
         public string Maker(Order i_Order)
         {
@@ -28,9 +37,15 @@ namespace CoffeeMachineLibrary
                 return "M:this product does not exist";
 
             KeyValuePair<string, double> l_Item = m_Product.FirstOrDefault(p => p.Key == i_Order.Product).Value;
-
+            
             if (i_Order.Money < l_Item.Value)
                 return "M:it is missing " + (l_Item.Value - i_Order.Money);
+
+            if (m_Quantity.isEmpty(i_Order.Product))
+            {
+                m_Email.notifyMissingDrink(i_Order.Product);
+                return "M:shortages of water and/or milk";
+            }
 
             m_Sale[i_Order.Product]++;
             m_Profit += l_Item.Value;
