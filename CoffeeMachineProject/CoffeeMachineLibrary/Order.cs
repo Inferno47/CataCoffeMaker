@@ -11,5 +11,6 @@ namespace CoffeeMachineLibrary
         public string Product { get; set; }
         public int Sugar { get; set; }
         public string Message { get; set; }
+        public double Money { get; set; }
     }
 }
