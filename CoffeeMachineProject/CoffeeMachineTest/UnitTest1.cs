@@ -115,4 +115,43 @@ public class Tests
     }
 
     #endregion
+
+    #region Iteration 3
+
+    [Test]
+    public void TestSimpleOrangeJuice()
+    {
+        Order l_Order = new Order { Product = "orange juice", Money = 0.6 };
+        Assert.AreEqual("O::", m_Coffeemaker.Maker(l_Order));
+    }
+
+    [Test]
+    public void TestSimpleOrangeJuiceHot()
+    {
+        Order l_Order = new Order { Product = "orange juice", Hot = true, Money = 0.6 };
+        Assert.AreEqual("O::", m_Coffeemaker.Maker(l_Order));
+    }
+
+    [Test]
+    public void TestSimpleCoffeeHot()
+    {
+        Order l_Order = new Order { Product = "coffee", Hot = true, Money = 0.6 };
+        Assert.AreEqual("Ch::", m_Coffeemaker.Maker(l_Order));
+    }
+
+    [Test]
+    public void TestChocolateHot()
+    {
+        Order l_Order = new Order { Product = "chocolate", Hot = true, Money = 0.5 };
+        Assert.AreEqual("Hh::", m_Coffeemaker.Maker(l_Order));
+    }
+
+    [Test]
+    public void TestTeaHot()
+    {
+        Order l_Order = new Order { Product = "tea", Hot = true, Money = 0.5 };
+        Assert.AreEqual("Th::", m_Coffeemaker.Maker(l_Order));
+    }
+
+    #endregion
 }

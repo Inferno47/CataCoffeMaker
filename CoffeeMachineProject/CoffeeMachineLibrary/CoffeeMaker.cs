@@ -11,6 +11,7 @@ namespace CoffeeMachineLibrary
         Dictionary<string, KeyValuePair<string, double>> m_Product = new Dictionary<string, KeyValuePair<string, double>>() {
             { "tea", new KeyValuePair<string, double>("T", 0.4) },
             { "coffee", new KeyValuePair<string, double>("C", 0.6) },
+            { "orange juice", new KeyValuePair<string, double>("O", 0.6) },
             { "chocolate", new KeyValuePair<string, double>("H", 0.5) } };
 
         public string Maker(Order i_Order)
@@ -18,7 +19,7 @@ namespace CoffeeMachineLibrary
             if (i_Order == null || i_Order.Product == null)
                 return "M:You should send product";
 
-            string l_Sugar = i_Order.Sugar != 0 ? i_Order.Sugar + ":0" : ":";
+            string l_Sugar = (i_Order.Sugar != 0 && i_Order.Product != "orange juice") ? i_Order.Sugar + ":0" : ":";
 
             if (!m_Product.ContainsKey(i_Order.Product))
                 return "M:this product does not exist";
@@ -28,7 +29,7 @@ namespace CoffeeMachineLibrary
             if (i_Order.Money < l_Item.Value)
                 return "M:it is missing " + (l_Item.Value - i_Order.Money);
 
-            return l_Item.Key + ":" + l_Sugar;
+            return l_Item.Key + (i_Order.Hot && i_Order.Product != "orange juice" ? "h" : "") + ":" + l_Sugar;
         }
     }
 }

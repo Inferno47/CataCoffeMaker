@@ -12,5 +12,6 @@ namespace CoffeeMachineLibrary
         public int Sugar { get; set; }
         public string Message { get; set; }
         public double Money { get; set; }
+        public bool Hot { get; set; }
     }
 }
