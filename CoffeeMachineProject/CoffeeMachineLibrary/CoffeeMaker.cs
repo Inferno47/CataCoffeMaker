@@ -8,7 +8,10 @@ namespace CoffeeMachineLibrary
 {
     public class CoffeeMaker
     {
-        Dictionary<string, KeyValuePair<string, double>> m_Product = new Dictionary<string, KeyValuePair<string, double>>() {
+        private Dictionary<string, int> m_Sale = new Dictionary<string, int>() { { "tea", 0 }, { "coffee", 0 }, { "orange juice", 0 }, { "chocolate", 0 } };
+        private double m_Profit = 0;
+
+        private Dictionary<string, KeyValuePair<string, double>> m_Product = new Dictionary<string, KeyValuePair<string, double>>() {
             { "tea", new KeyValuePair<string, double>("T", 0.4) },
             { "coffee", new KeyValuePair<string, double>("C", 0.6) },
             { "orange juice", new KeyValuePair<string, double>("O", 0.6) },
@@ -29,7 +32,22 @@ namespace CoffeeMachineLibrary
             if (i_Order.Money < l_Item.Value)
                 return "M:it is missing " + (l_Item.Value - i_Order.Money);
 
+            m_Sale[i_Order.Product]++;
+            m_Profit += l_Item.Value;
+
             return l_Item.Key + (i_Order.Hot && i_Order.Product != "orange juice" ? "h" : "") + ":" + l_Sugar;
+        }
+
+        public string Report()
+        {
+            string l_Report = "Sales:\n";
+
+            foreach (KeyValuePair<string, int> l_Product in m_Sale)
+                l_Report += l_Product.Key + ": " + l_Product.Value + "\n";
+
+            l_Report += "\nProfit: " + m_Profit;
+
+            return l_Report;
         }
     }
 }

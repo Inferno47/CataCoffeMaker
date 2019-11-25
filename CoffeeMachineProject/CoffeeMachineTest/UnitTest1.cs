@@ -154,4 +154,27 @@ public class Tests
     }
 
     #endregion
+
+    #region Iteration 4
+
+    [Test]
+    public void TestReportSimple()
+    {
+        Assert.AreEqual("Sales:\ntea: 0\ncoffee: 0\norange juice: 0\nchocolate: 0\n\nProfit: 0", m_Coffeemaker.Report());
+    }
+
+    [Test]
+    public void TestReport()
+    {
+        Order l_Order = new Order { Product = "chocolate", Sugar = 2, Money = 0.5 };
+        m_Coffeemaker.Maker(l_Order);
+        m_Coffeemaker.Maker(l_Order);
+        l_Order = new Order { Product = "coffee", Hot = true, Money = 0.6 };
+        m_Coffeemaker.Maker(l_Order);
+        l_Order = new Order { Product = "orange juice", Money = 0.6 };
+        m_Coffeemaker.Maker(l_Order);
+        Assert.AreEqual("Sales:\ntea: 0\ncoffee: 1\norange juice: 1\nchocolate: 2\n\nProfit: 2,2", m_Coffeemaker.Report());
+    }
+
+    #endregion
 }
