@@ -8,27 +8,31 @@ namespace CoffeeMachineLibrary
 {
     public class CoffeeMaker
     {
-        Dictionary<string, KeyValuePair<string, double>> m_Product = new Dictionary<string, KeyValuePair<string, double>>() {
-            { "tea", new KeyValuePair<string, double>("T", 0.4) },
-            { "coffee", new KeyValuePair<string, double>("C", 0.6) },
-            { "chocolate", new KeyValuePair<string, double>("H", 0.5) } };
+        List<Product> m_Products = new List<Product>();
+
+        public CoffeeMaker()
+        {
+            m_Products.Add(new Product("tea", 'T', 0.4));
+            m_Products.Add(new Product("coffee", 'C', 0.6));
+            m_Products.Add(new Product("chocolate", 'H', 0.5));
+        }
+
+        public CoffeeMaker(List<Product> i_Product)
+        {
+            m_Products = i_Product;
+        }
 
         public string Maker(Order i_Order)
         {
             if (i_Order == null || i_Order.Product == null)
                 return "M:You should send product";
 
-            string l_Sugar = i_Order.Sugar != 0 ? i_Order.Sugar + ":0" : ":";
+            Product l_Product = m_Products.FirstOrDefault(p => p.m_Name == i_Order.Product);
 
-            if (!m_Product.ContainsKey(i_Order.Product))
+            if (l_Product == null)
                 return "M:this product does not exist";
 
-            KeyValuePair<string, double> l_Item = m_Product.FirstOrDefault(p => p.Key == i_Order.Product).Value;
-
-            if (i_Order.Money < l_Item.Value)
-                return "M:it is missing " + (l_Item.Value - i_Order.Money);
-
-            return l_Item.Key + ":" + l_Sugar;
+            return l_Product.GetCommand(i_Order);
         }
     }
 }
